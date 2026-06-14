@@ -401,11 +401,10 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
     const danhSachNutVe = document.querySelectorAll('.nut-ve-trang-chu');
     danhSachNutVe.forEach((nut) => {
         nut.addEventListener('click', () => {
-            // Ẩn tất cả các màn hình giải thích đi
-            manHinhGiaiThichCong.style.display = 'none';
-            manHinhGiaiThichTru.style.display = 'none';
-            manHinhGiaiThichNhan.style.display = 'none';
-            manHinhGiaiThichChia.style.display = 'none';
+            document.getElementById('man-hinh-giai-thich-cong').style.display = 'none';
+            document.getElementById('man-hinh-giai-thich-tru').style.display = 'none';
+            document.getElementById('man-hinh-giai-thich-nhan').style.display = 'none';
+            document.getElementById('man-hinh-giai-thich-chia').style.display = 'none';
             
             // Hiện lại trang chủ (Khu vực chọn phép tính)
             if (khuChonPhepTinh) khuChonPhepTinh.style.display = 'block';
