@@ -268,6 +268,17 @@ font-size: 18px;
     </div>
 
 <script>
+
+    // Biến toàn cục để quản lý xem có đang ở chế độ chọn để xóa hay không
+    let dangTrongCheDoXoa = false;
+
+    // Lấy thêm các nút bấm xóa ra để điều khiển
+    const nutBatDauXoa = document.getElementById('nut-bat-dau-xoa');
+    const nutXacNhanXoa = document.getElementById('nut-xac-nhan-xoa');
+    const nutHuyXoa = document.getElementById('nut-huy-xoa');
+    const cotTieuDeTick = document.getElementById('cot-tieu-de-tick');
+
+    
     // 1. BIẾN TOÀN CỤC QUẢN LÝ TRẠNG THÁI
     let danhSachCauHoi = [];
     let cauHienTai = 0;
@@ -480,14 +491,7 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
         khuChonPhepTinh.style.display = 'block';
     });
 
-    // Biến toàn cục để quản lý xem có đang ở chế độ chọn để xóa hay không
-    let dangTrongCheDoXoa = false;
-
-    // Lấy thêm các nút bấm xóa ra để điều khiển
-    const nutBatDauXoa = document.getElementById('nut-bat-dau-xoa');
-    const nutXacNhanXoa = document.getElementById('nut-xac-nhan-xoa');
-    const nutHuyXoa = document.getElementById('nut-huy-xoa');
-    
+  
 
     // ===================================================
     // 1. HÀM NẠP VÀ HIỂN THỊ LỊCH SỬ LÊN BẢNG HTML (ĐÃ NÂNG CẤP)
@@ -509,6 +513,8 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
             if (!dangTrongCheDoXoa) nutBatDauXoa.style.display = 'block';
         }
 
+        let mangLuoiTam = ""; // Mảng chuỗi đệm để dựng khung giao diện
+
         // Duyệt mảng gốc từ đầu đến cuối
         danhSachDiem.forEach((item, index) => {
             // Kiểm tra xem có đang bật chế độ xóa không để hiện ô checkbox
@@ -523,9 +529,10 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
                     <td style="padding: 10px; color: #7f8c8d;">${item.thoiGianLam}</td>
                 </tr>
             `;
-            // Kết quả mới nhất chèn lên đầu bảng
-            thanBang.innerHTML = hangMoi + thanBang.innerHTML; 
+            mangLuoiTam = hangMoi + mangLuoiTam;
         });
+        // Kết quả mới nhất chèn lên đầu bảng
+        thanBang.innerHTML = mangLuoiTam;
     }
 
     function luuDiemMoi(phepTinhDaLam, diemDatDuoc, tongThoiGianGiay) {
@@ -549,7 +556,7 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
     // ===================================================
     // 2. CÁC SỰ KIỆN XỬ LÝ KHI BẤM NÚT XÓA
     // ===================================================
-    const cotTieuDeTick = document.getElementById('cot-tieu-de-tick');
+    
     // Khi bấm nút "Xóa lịch sử 🗑️" -> Kích hoạt chế độ chọn
     nutBatDauXoa.addEventListener('click', () => {
         dangTrongCheDoXoa = true;
