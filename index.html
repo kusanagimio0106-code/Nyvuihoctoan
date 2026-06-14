@@ -487,7 +487,7 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
     const nutBatDauXoa = document.getElementById('nut-bat-dau-xoa');
     const nutXacNhanXoa = document.getElementById('nut-xac-nhan-xoa');
     const nutHuyXoa = document.getElementById('nut-huy-xoa');
-    const cotTieuDeTick = document.getElementById('cot-tieu-de-tick');
+    
 
     // ===================================================
     // 1. HÀM NẠP VÀ HIỂN THỊ LỊCH SỬ LÊN BẢNG HTML (ĐÃ NÂNG CẤP)
@@ -549,7 +549,7 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
     // ===================================================
     // 2. CÁC SỰ KIỆN XỬ LÝ KHI BẤM NÚT XÓA
     // ===================================================
-    
+    const cotTieuDeTick = document.getElementById('cot-tieu-de-tick');
     // Khi bấm nút "Xóa lịch sử 🗑️" -> Kích hoạt chế độ chọn
     nutBatDauXoa.addEventListener('click', () => {
         dangTrongCheDoXoa = true;
@@ -595,7 +595,7 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
         // Tiến hành hỏi lại lần cuối để chắc chắn không xóa nhầm
         if (confirm(`Bạn có chắc chắn muốn xóa ${mangIndexCanXoa.length} mục lịch sử này không?`)) {
             // Lọc mảng: Chỉ giữ lại những mục có index KHÔNG nằm trong mảng cần xóa
-            let danhSachMoi SauXoa = danhSachDiem.filter((item, index) => {
+            let danhSachMoiSauXoa = danhSachDiem.filter((item, index) => {
                 return !mangIndexCanXoa.includes(index);
             });
 
