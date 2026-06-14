@@ -152,6 +152,9 @@ font-size: 18px;
                 <button id="nut-hieu-roi-cong" class="button1" style="background: linear-gradient(135deg, #2ed573, #1e90ff); min-width: 200px;">
                     Con hiểu rồi, làm bài tập thôi! 🚀
                 </button>
+                <button class="nut-ve-trang-chu button1" style="background: linear-gradient(135deg, #7f8c8d, #34495e); min-width: 200px; display: block; margin: 15px auto 0 auto; padding: 10px 20px; font-size: 15px;">
+                    Quay lại chọn phép tính 🏠
+                </button>
             </div>
 
             <div id="man-hinh-giai-thich-tru" style="display: none; text-align: center; padding: 10px;">
@@ -171,6 +174,9 @@ font-size: 18px;
                 </div>
                 <button id="nut-hieu-roi-tru" class="button1" style="background: linear-gradient(135deg, #2ed573, #1e90ff); min-width: 200px;">
                     Con hiểu rồi, làm bài tập thôi! 🚀
+                </button>
+                <button class="nut-ve-trang-chu button1" style="background: linear-gradient(135deg, #7f8c8d, #34495e); min-width: 200px; display: block; margin: 15px auto 0 auto; padding: 10px 20px; font-size: 15px;">
+                    Quay lại chọn phép tính 🏠
                 </button>
             </div>
 
@@ -193,6 +199,9 @@ font-size: 18px;
     <button id="nut-hieu-roi-nhan" class="button1" style="background: linear-gradient(135deg, #2ed573, #1e90ff); min-width: 200px;">
         Con hiểu rồi, làm bài tập thôi! 🚀
     </button>
+    <button class="nut-ve-trang-chu button1" style="background: linear-gradient(135deg, #7f8c8d, #34495e); min-width: 200px; display: block; margin: 15px auto 0 auto; padding: 10px 20px; font-size: 15px;">
+                    Quay lại chọn phép tính 🏠
+                </button>
 </div>
 
 <div id="man-hinh-giai-thich-chia" style="display: none; text-align: center; padding: 10px;">
@@ -217,6 +226,9 @@ font-size: 18px;
     <button id="nut-hieu-roi-chia" class="button1" style="background: linear-gradient(135deg, #2ed573, #1e90ff); min-width: 200px;">
         Con hiểu rồi, làm bài tập thôi! 🚀
     </button>
+    <button class="nut-ve-trang-chu button1" style="background: linear-gradient(135deg, #7f8c8d, #34495e); min-width: 200px; display: block; margin: 15px auto 0 auto; padding: 10px 20px; font-size: 15px;">
+                    Quay lại chọn phép tính 🏠
+                </button>
 </div>
 
             <div id="man-hinh-lam-bai" style="display: none; text-align: center; padding: 10px;">
@@ -385,6 +397,21 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
         hienThiCauHoi();
     }
 
+    // Kích hoạt tính năng quay lại trang chủ cho cả 4 màn hình giải thích
+    const danhSachNutVe = document.querySelectorAll('.nut-ve-trang-chu');
+    danhSachNutVe.forEach((nut) => {
+        nut.addEventListener('click', () => {
+            // Ẩn tất cả các màn hình giải thích đi
+            manHinhGiaiThichCong.style.display = 'none';
+            manHinhGiaiThichTru.style.display = 'none';
+            manHinhGiaiThichNhan.style.display = 'none';
+            manHinhGiaiThichChia.style.display = 'none';
+            
+            // Hiện lại trang chủ (Khu vực chọn phép tính)
+            if (khuChonPhepTinh) khuChonPhepTinh.style.display = 'block';
+        });
+    });
+    
 // 6. HÀM SINH ĐỀ PHÉP CỘNG, TRỪ, NHÂN HOẶC CHIA PHẠM VI <= 100
     function taoDeBaiTap() {
         danhSachCauHoi = [];
@@ -510,44 +537,52 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
   
 
     // ===================================================
-    // 1. HÀM NẠP VÀ HIỂN THỊ LỊCH SỬ LÊN BẢNG HTML (ĐÃ NÂNG CẤP)
+    // 1. HÀM NẠP VÀ HIỂN THỊ LỊCH SỬ LÊN BẢNG HTML (ĐÃ CHUẨN HÓA LOGIC)
     // ===================================================
     function hienThiLichSu() {
         let danhSachDiem = JSON.parse(localStorage.getItem('lichSuHocToan')) || [];
         const thanBang = document.getElementById('lich-su-chi-tiet');
         if (!thanBang) return;
         
-        thanBang.innerHTML = "";
+        thanBang.innerHTML = ""; // Xóa sạch dữ liệu cũ
         
-        // Nếu không có lịch sử nào, ẩn luôn nút "Xóa lịch sử" đi cho gọn
+        // Nếu không có lịch sử học tập nào
         if (danhSachDiem.length === 0) {
-            nutBatDauXoa.style.display = 'none';
+            if (nutBatDauXoa) nutBatDauXoa.style.display = 'none';
             thoatCheDoXoa();
             thanBang.innerHTML = `<tr><td colspan="5" style="padding: 20px; color: #7f8c8d;">Chưa có lịch sử làm bài nào, Ný hãy làm bài nhé! 🥰</td></tr>`;
             return;
         } else {
-            if (!dangTrongCheDoXoa) nutBatDauXoa.style.display = 'block';
+            if (!dangTrongCheDoXoa && nutBatDauXoa) nutBatDauXoa.style.display = 'block';
         }
 
-        let mangLuoiTam = ""; // Mảng chuỗi đệm để dựng khung giao diện
+        let mangLuoiTam = ""; // Chuỗi tích lũy xây dựng bảng
 
-        // Duyệt mảng gốc từ đầu đến cuối
+        // Duyệt danh sách điểm để xây dựng các dòng HTML
         danhSachDiem.forEach((item, index) => {
-            // Kiểm tra xem có đang bật chế độ xóa không để hiện ô checkbox
-            let hienThiOChon = dangTrongCheDoXoa ? `<td style="padding: 10px;"><input type="checkbox" class="o-chon-xoa" data-index="${index}" style="width: 20px; height: 20px;"></td>` : `<td style="display: none;"></td>`;
+            let hienThiOChon = "";
+            
+            // Ép buộc kiểm tra điều kiện trạng thái thực tế tại thời điểm render
+            if (dangTrongCheDoXoa) {
+                hienThiOChon = `<td style="padding: 10px; vertical-align: middle;"><input type="checkbox" class="o-chon-xoa" data-index="${index}" style="width: 22px; height: 22px; cursor: pointer;"></td>`;
+            } else {
+                hienThiOChon = `<td style="display: none;"></td>`;
+            }
             
             let hangMoi = `
                 <tr style="border-bottom: 1px solid #ddd;">
                     ${hienThiOChon}
-                    <td style="padding: 10px; font-size: 13px;">${item.ngayGio}</td>
-                    <td style="padding: 10px; font-weight: bold;">${item.phepTinh}</td>
-                    <td style="padding: 10px;"><strong style="font-size: 18px; color: #ff4757;">${item.diemSo}</strong></td>
-                    <td style="padding: 10px; color: #7f8c8d;">${item.thoiGianLam}</td>
+                    <td style="padding: 10px; font-size: 13px; vertical-align: middle;">${item.ngayGio}</td>
+                    <td style="padding: 10px; font-weight: bold; vertical-align: middle;">${item.phepTinh}</td>
+                    <td style="padding: 10px; vertical-align: middle;"><strong style="font-size: 18px; color: #ff4757;">${item.diemSo}</strong></td>
+                    <td style="padding: 10px; color: #7f8c8d; vertical-align: middle;">${item.thoiGianLam}</td>
                 </tr>
             `;
+            // Cộng dồn ngược để kết quả mới nhất xuất hiện trên đầu bảng
             mangLuoiTam = hangMoi + mangLuoiTam;
         });
-        // Kết quả mới nhất chèn lên đầu bảng
+
+        // Đổ toàn bộ cấu trúc chuỗi mượt mà vào thân bảng
         thanBang.innerHTML = mangLuoiTam;
     }
 
