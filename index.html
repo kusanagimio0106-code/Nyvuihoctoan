@@ -237,6 +237,17 @@ font-size: 18px;
 
             <div style="margin-top: 30px;">
                 <h2>Xem lại điểm cũ⌚</h2>
+                <div style="margin-bottom: 15px; display: flex; justify-content: center; gap: 10px;">
+                    <button id="nut-bat-dau-xoa" class="button1" style="background: linear-gradient(135deg, #7f8c8d, #34495e); padding: 8px 15px; font-size: 14px; min-width: 120px;">
+                        Xóa lịch sử 🗑️
+                    </button>
+                    <button id="nut-xac-nhan-xoa" class="button1" style="background: linear-gradient(135deg, #ff4757, #ff6b6b); padding: 8px 15px; font-size: 14px; min-width: 120px; display: none;">
+                        Xác nhận xóa ❌
+                    </button>
+                    <button id="nut-huy-xoa" class="button1" style="background: linear-gradient(135deg, #bdc3c7, #7f8c8d); padding: 8px 15px; font-size: 14px; min-width: 120px; display: none;">
+                        Hủy ↩️
+                    </button>
+                </div>
                 <table id="history" border="1" style="width:100%; text-align:center; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                     <thead class="chu-cau-vong">
                         <tr> 
@@ -469,23 +480,51 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
         khuChonPhepTinh.style.display = 'block';
     });
 
-    // 10. HÀM QUẢN LÝ LOCALSTORAGE VÀ HIỂN THỊ LỊCH SỬ
+    // Biến toàn cục để quản lý xem có đang ở chế độ chọn để xóa hay không
+    let dangTrongCheDoXoa = false;
+
+    // Lấy thêm các nút bấm xóa ra để điều khiển
+    const nutBatDauXoa = document.getElementById('nut-bat-dau-xoa');
+    const nutXacNhanXoa = document.getElementById('nut-xac-nhan-xoa');
+    const nutHuyXoa = document.getElementById('nut-huy-xoa');
+    const cotTieuDeTick = document.getElementById('cot-tieu-de-tick');
+
+    // ===================================================
+    // 1. HÀM NẠP VÀ HIỂN THỊ LỊCH SỬ LÊN BẢNG HTML (ĐÃ NÂNG CẤP)
+    // ===================================================
     function hienThiLichSu() {
         let danhSachDiem = JSON.parse(localStorage.getItem('lichSuHocToan')) || [];
         const thanBang = document.getElementById('lich-su-chi-tiet');
         if (!thanBang) return;
         
         thanBang.innerHTML = "";
-        danhSachDiem.forEach((item) => {
+        
+        // Nếu không có lịch sử nào, ẩn luôn nút "Xóa lịch sử" đi cho gọn
+        if (danhSachDiem.length === 0) {
+            nutBatDauXoa.style.display = 'none';
+            thoatCheDoXoa();
+            thanBang.innerHTML = `<tr><td colspan="5" style="padding: 20px; color: #7f8c8d;">Chưa có lịch sử làm bài nào, Ný hãy làm bài nhé! 🥰</td></tr>`;
+            return;
+        } else {
+            if (!dangTrongCheDoXoa) nutBatDauXoa.style.display = 'block';
+        }
+
+        // Duyệt mảng gốc từ đầu đến cuối
+        danhSachDiem.forEach((item, index) => {
+            // Kiểm tra xem có đang bật chế độ xóa không để hiện ô checkbox
+            let hienThiOChon = dangTrongCheDoXoa ? `<td style="padding: 10px;"><input type="checkbox" class="o-chon-xoa" data-index="${index}" style="width: 20px; height: 20px;"></td>` : `<td style="display: none;"></td>`;
+            
             let hangMoi = `
                 <tr style="border-bottom: 1px solid #ddd;">
+                    ${hienThiOChon}
                     <td style="padding: 10px; font-size: 13px;">${item.ngayGio}</td>
                     <td style="padding: 10px; font-weight: bold;">${item.phepTinh}</td>
                     <td style="padding: 10px;"><strong style="font-size: 18px; color: #ff4757;">${item.diemSo}</strong></td>
                     <td style="padding: 10px; color: #7f8c8d;">${item.thoiGianLam}</td>
                 </tr>
             `;
-            thanBang.innerHTML = hangMoi + thanBang.innerHTML; // Kết quả mới chèn lên đầu
+            // Kết quả mới nhất chèn lên đầu bảng
+            thanBang.innerHTML = hangMoi + thanBang.innerHTML; 
         });
     }
 
@@ -506,6 +545,68 @@ document.getElementById('nut-hieu-roi-chia').addEventListener('click', () => {
         localStorage.setItem('lichSuHocToan', JSON.stringify(danhSachDiem));
         hienThiLichSu();
     }
+
+    // ===================================================
+    // 2. CÁC SỰ KIỆN XỬ LÝ KHI BẤM NÚT XÓA
+    // ===================================================
+    
+    // Khi bấm nút "Xóa lịch sử 🗑️" -> Kích hoạt chế độ chọn
+    nutBatDauXoa.addEventListener('click', () => {
+        dangTrongCheDoXoa = true;
+        nutBatDauXoa.style.display = 'none';
+        nutXacNhanXoa.style.display = 'block';
+        nutHuyXoa.style.display = 'block';
+        cotTieuDeTick.style.display = 'table-cell'; // Hiện cột tiêu đề "Chọn"
+        hienThiLichSu(); // Vẽ lại bảng để xuất hiện các ô checkbox
+    });
+
+    // Hàm thoát chế độ xóa, đưa giao diện về ban đầu
+    function thoatCheDoXoa() {
+        dangTrongCheDoXoa = false;
+        nutXacNhanXoa.style.display = 'none';
+        nutHuyXoa.style.display = 'none';
+        cotTieuDeTick.style.display = 'none';
+        hienThiLichSu();
+    }
+
+    // Khi bấm nút "Hủy ↩️" -> Quay về trạng thái xem bảng bình thường
+    nutHuyXoa.addEventListener('click', thoatCheDoXoa);
+
+    // Khi bấm nút "Xác nhận xóa ❌" -> Tiến hành lọc bỏ phần tử được tích chọn
+    nutXacNhanXoa.addEventListener('click', () => {
+        let danhSachDiem = JSON.parse(localStorage.getItem('lichSuHocToan')) || [];
+        const cacOChon = document.querySelectorAll('.o-chon-xoa');
+        
+        // Gom tất cả các index (vị trí hàng) được tích chọn vào một mảng
+        let mangIndexCanXoa = [];
+        cacOChon.forEach((checkbox) => {
+            if (checkbox.checked) {
+                // Ép kiểu về số nguyên (int) vì data-index lấy ra là chuỗi
+                mangIndexCanXoa.push(parseInt(checkbox.getAttribute('data-index')));
+            }
+        });
+
+        // Nếu bé chưa tích chọn ô nào cả mà bấm xác nhận
+        if (mangIndexCanXoa.length === 0) {
+            alert("Ný ơi, hãy tích chọn ít nhất một ô muốn xóa đã nhé! 😉");
+            return;
+        }
+
+        // Tiến hành hỏi lại lần cuối để chắc chắn không xóa nhầm
+        if (confirm(`Bạn có chắc chắn muốn xóa ${mangIndexCanXoa.length} mục lịch sử này không?`)) {
+            // Lọc mảng: Chỉ giữ lại những mục có index KHÔNG nằm trong mảng cần xóa
+            let danhSachMoi SauXoa = danhSachDiem.filter((item, index) => {
+                return !mangIndexCanXoa.includes(index);
+            });
+
+            // Cập nhật mảng mới sạch sẽ vào bộ nhớ máy
+            localStorage.setItem('lichSuHocToan', JSON.stringify(danhSachMoiSauXoa));
+            
+            // Thoát chế độ chọn và cập nhật lại bảng điểm
+            thoatCheDoXoa();
+            alert("Đã xóa lịch sử thành công! 🌟");
+        }
+    });
 </script>
 </body>
 </html>
